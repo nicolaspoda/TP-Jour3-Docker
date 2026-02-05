@@ -10,7 +10,7 @@ secrets:
 
 services:
   front:
-    image: tp-docker-jour3_front
+    image: nicolaspoda/tp-docker-jour3_front:latest
     build:
       context: front
       dockerfile: Dockerfile
@@ -29,7 +29,7 @@ services:
         order: start-first
 
   back:
-    image: tp-docker-jour3_back
+    image: nicolaspoda/tp-docker-jour3_back:latest
     build:
       context: back
       dockerfile: Dockerfile

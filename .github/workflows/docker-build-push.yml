@@ -23,6 +23,7 @@ jobs:
       - name: Build and push Front
         run: |
           docker buildx build \
+            --platform linux/amd64,linux/arm64 \
             --tag ${{ secrets.DOCKERHUB_USERNAME }}/tp-docker-jour3_front:latest \
             --tag ${{ secrets.DOCKERHUB_USERNAME }}/tp-docker-jour3_front:${{ github.sha }} \
             --push \
@@ -31,6 +32,7 @@ jobs:
       - name: Build and push Back
         run: |
           docker buildx build \
+            --platform linux/amd64,linux/arm64 \
             --tag ${{ secrets.DOCKERHUB_USERNAME }}/tp-docker-jour3_back:latest \
             --tag ${{ secrets.DOCKERHUB_USERNAME }}/tp-docker-jour3_back:${{ github.sha }} \
             --push \
