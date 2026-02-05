@@ -1,0 +1,83 @@
+version: '3.8'
+
+secrets:
+  mysql-user:
+    file: ./secrets/mysql_user.secret
+  mysql-password:
+    file: ./secrets/mysql_password.secret
+  mysql-root-password:
+    file: ./secrets/mysql_root_password.secret
+
+services:
+  front:
+    image: tp-docker-jour3_front
+    build:
+      context: front
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    networks:
+      - front-network
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        order: start-first
+
+  back:
+    image: tp-docker-jour3_back
+    build:
+      context: back
+      dockerfile: Dockerfile
+    secrets:
+      - mysql-user
+      - mysql-password
+    environment:
+      DB_USER_FILE: "/run/secrets/mysql-user"
+      DB_PASSWORD_FILE: "/run/secrets/mysql-password"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    networks:
+      - front-network
+      - back-network
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        order: start-first
+
+  db:
+    image: mariadb:latest
+    secrets:
+      - mysql-user
+      - mysql-password
+      - mysql-root-password
+    environment:
+      MYSQL_USER_FILE: "/run/secrets/mysql-user"
+      MYSQL_PASSWORD_FILE: "/run/secrets/mysql-password"
+      MARIADB_ROOT_PASSWORD_FILE: "/run/secrets/mysql-root-password"
+    volumes:
+      - db-data:/var/lib/mysql
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+networks:
+  front-network:
+    internal: false
+  back-network:
+    internal: true
+
+volumes:
+  db-data:
