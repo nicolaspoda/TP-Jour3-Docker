@@ -24,7 +24,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./front
-          file: ./front/Dockerfile
+          file: Dockerfile
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/tp-docker-jour3_front:latest
@@ -34,7 +34,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./back
-          file: ./back/Dockerfile
+          file: Dockerfile
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/tp-docker-jour3_back:latest
